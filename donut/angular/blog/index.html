@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0 maximum-scale=1.0 user-scalable=no">
+	<meta name="fragment" content="!" />
+	<meta name="generator" content="">
+	<meta name="keywords" content="">
+	<meta name="author" content="lizouzt">
+	<meta name="description" content="">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" conten="0">
+	<link rel="stylesheet" type="text/css" href="resources/css/reset-min.css">
+	<link rel="stylesheet" type="text/css" href="resources/css/main.css">
+	<link rel="stylesheet" type="text/css" href="resources/css/media-query.css">
+	<script src="js/lib/require/require.js" data-main="js/main.js"></script>
+	<title>FIA</title>
+</head>
+<body>
+	<noscript><div style="color:red">您的浏览器不支持javascript,部分功能无法使用</div></noscript>
+	<header id="header" class="bs-b-m">
+		<div class="title d-f">
+			<div class="logo d-f0">
+				<div class="logo-b">
+					<span class="fcl-b">F</span><span class="fcl-r">r</span><span class="fcl-y">o</span><span class="fcl-b">nt</span><span class="fcl-g">E</span><span class="fcl-r">n</span><span class="fcl-b">d</span>
+				</div>
+			</div>
+			<div id="search" class="d-f2">
+				<div class="hw d-f">
+					<!-- <form name="gsf" method="GET" action="#/search"> -->
+						<div class="d-f2" style="width:100%;height:100%;">
+							<div class="fi-wb">
+								<div class="fi-w">
+									<input type="search" placeholder="文章检索" name="q" class="fi" ng-model="query">
+								</div>
+							</div>
+						</div>
+						<div class="fb-w d-f0">
+							<button type="submit" class="fb"><span class="f-i f-i-s"></span></button>
+						</div>
+					<!-- <form> -->
+				</div>
+			</div>
+			<div class="tip d-f1">all in solutions</div>
+		</div>
+		<nav class="navbar">
+			<a class="hbtn bs-w-b" href="../lizou" target="_top" title="首页">
+				<span class="fts-b fcl-r">FE</span><span>首页</span>
+			</a>
+			<div class="navb">
+				<a class="anchor nav" href="#/blogs/">All</a>
+				<a class="anchor nav" href="#/blogs/js">JSS</a>
+				<a class="anchor nav" href="#/blogs/css">CSSS</a>
+				<div class="nav">＋MORE
+					<div class="db">
+						<span class="anchor" href="forabout">About</span>
+						<span class="anchor" href="forcontact">Contact</span>
+					</div>
+				</div>
+			</div>
+			<div id="sib" class="f-fb">
+				<span class="f-i f-i-s"></span>
+			</div>
+		</nav>
+	</header>
+	<div ng-view id="content"></div>
+</body>
+</html>

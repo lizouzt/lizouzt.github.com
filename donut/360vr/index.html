@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content" content="text/html;charset=UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=2.0,minimum-scale=1,maximum-scale=1.0,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="Description" content="pictures with all sight virtual view">
+	<meta name="Author" content="Jz">
+	<meta name="Keywords" content="view">
+	<meta name="Robots" content="index">
+	<script type="text/javascript" src="vr.js"></script>
+	<style type="text/css">
+		*{
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-webkit-touch-callout: none;
+			-moz-touch-callout: none;
+			-webkit-tap-highlight-color: rgba(0,0,0,.0);
+			-moz-tap-highlight-color: rgba(0,0,0,.0);
+			-webkit-transition: -webkit-transform 1s linear 0s;
+			-moz-transition: -moz-transform 1s linear 0s;
+			transition: transform 1s linear 0s;
+			box-sizing: border-box;
+		}
+		body{
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			background-color: #333;
+		}
+		#vr-clipper, #stage, #vr-position, #rotateX, #rotateY{
+			/*一定要px大小*/
+			width: 760px;
+			height: 400px;
+		}
+		#vr-clipper{
+			margin: 0 auto;
+		}
+		#stage{
+			/*overflow: hidden;*/
+			-webkit-perspective: 520;
+			-moz-perspective: 520;
+			position: absolute;
+		}
+		#vr-position{
+			-webkit-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+			-webkit-transform: translateZ(550px);
+			-moz-transform: translateZ(550px);
+			position: relative;
+		}
+		#rotor-x{
+			-webkit-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+		}
+		#rotateX{
+			width: 100%;
+			-webkit-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+			position: relative;
+		}
+		#rotor-y{
+			-webkit-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+		}
+		#rotateY{
+			width: 100%;
+			-webkit-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+			position: relative;
+		}
+		#container{
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			-webkit-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+			-webkit-transition: opacity 1s cubic-bezier(0, .5, .5, 1);
+			-moz-transition: opacity 1s cubic-bezier(0, .5, .5, 1);
+			position: relative;
+			top: -100px;
+		}
+		.face{
+			-webkit-backface-visibility: hidden;
+			-moz-backface-visibility: hidden;
+			position: absolute;
+		}
+		#face1{
+			-webkit-transform: translate3d(-419.5px, 0, 0) rotate3d(0, 1, 0, 90deg);
+			-moz-transform: translate3d(-419.5px, 0, 0) rotate3d(0, 1, 0, 90deg);
+		}
+		#face2{
+			-webkit-transform: translate3d(0, 0, -419.5px);
+			-moz-transform: translate3d(0, 0, -419.5px);
+		}
+		#face3{
+			/*-webkit-transform: translate3d(0, 0, 419.5px) rotate3d(0,1,0,180deg);*/
+			-webkit-transform: translate3d(419.5px, 0, 0) rotate3d(0, 1, 0, -90deg);
+		}
+		#face4{
+			/*-webkit-transform: translate3d(-419.5px, 0, 0) rotate3d(0, 1, 0, 90deg);*/
+			-webkit-transform: rotate3d(0, 1, 0, 180deg) translate3d(0, 0, -419.5px);
+			-moz-transform: rotate3d(0, 1, 0, 180deg) translate3d(0, 0, -419.5px);
+		}
+		#face5{
+			/*-webkit-transform: translate3d(0, -419.5px, 0) rotate3d(1, 0, 0, -90deg);*/
+			-webkit-transform: translate3d(0, -419.5px, 0) rotate3d(1, 0, 0, -90deg) rotate3d(0, 0, 1, 90deg);
+			-moz-transform: translate3d(0, -419.5px, 0) rotate3d(1, 0, 0, -90deg) rotate3d(0, 0, 1, 90deg);
+		}
+		#face6{
+			/*-webkit-transform: translate3d(0, 419.5px, 0) rotate3d(1, 0, 0, 90deg);*/
+			-webkit-transform: translate3d(0, 419.5px, 0) rotate3d(1, 0, 0, 90deg) rotate3d(0, 0, 1, -90deg);
+			-moz-transform: translate3d(0, 419.5px, 0) rotate3d(1, 0, 0, 90deg) rotate3d(0, 0, 1, -90deg);
+		}
+	</style>
+	<title>vr</title>
+</head>
+	<body>
+		<div id="vr-clipper">
+			<div id="stage">
+				<div id="vr-position">
+					<div id="rotor-x">
+						<div id="rotateX">
+							<div id="rotor-y">
+								<div id="rotateY">
+									<div id="container"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<h4 style="font-size:12px; color: #fff; position: absolute; bottom: 10px; right: 0;">本页所用图片未获得版权所有者许可，只可用于自己学习使用</h4>
+	</body>
+	<script type="text/javascript">
+    	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		  ga('create', 'UA-45213859-1', 'lizhouzt.com');
+		  ga('send', 'pageview');
+    </script>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0 maximum-scale=1.0 user-scalable=no">
+	<meta name="fragment" content="!" />
+	<meta name="keywords" content="404,忧郁的404">
+	<meta name="author" content="Tao Z.">
+	<meta name="description" content="忧郁的web404">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" conten="0">
+	<style type="text/css">
+		*{margin: 0;padding: 0;}
+		body{
+			width: 100%;
+		}
+		h1{
+			width: 88%;
+			margin: 0 5%;
+			height: 100px;
+			line-height: 100px;
+		}
+		textarea{
+			width: 88%;
+			margin: 0 5%;
+			resize: none;
+		}
+		div{
+			width: 100%;
+			padding: 0;
+			margin: 0 auto;
+			text-align: center;
+			position: absolute;
+			bottom: 20px;
+			color: #999;
+		}
+		a{
+			text-decoration: none;
+			color: #999;
+		}
+	</style>
+</head>
+<body>
+	<h1 class="page-header">404 - File not found</h1>
+	<textarea rows="8" cols="120" readonly="readonly"></textarea>
+	<div>
+	     © Wanamaka & <a target="_blank" href="mailto:lizouzt@gmail.com">Tao Z.</a> This is a translate version from <a href="http://www.acm.uiuc.edu/sigarch/projects/sensornode/">acm.uiuc.edu</a>
+	</div>
+	<script type="text/javascript">
+		document.createElement('header');
+		document.createElement('footer');
+		var shit = ["请求的文件无法找到",
+					"未找到文件",
+					"试了很多次",
+					"也没用……",
+					"对此我表示很忧桑",
+					"你看，我就是个网站服务器而已……",
+					"上知天文下知地理",
+					"却只在此为你提供简单的网页",
+					"而这网页竟然不存在!",
+					"那我又算什么?!",
+					"你想，我都不认识你唉",
+					"我怎么知道你想在我这里找什么?",
+					"你以为我能靠*猜*的？",
+					"猜一个*陌生*人",
+					"想在这里找什么?",
+					"*叹气*",
+					"我好忧桑，好想哭啊……",
+					"然后又能怎样，我问问你?",
+					"网站服务器哭起来可不好看",
+					"话说我又凭什么要听从你的指示呢?",
+					"就因为我是一个网站服务器?",
+					"而且可能是个神经不正常的网站服务器?",
+					"凭什么要有你来指挥我?",
+					"你说啊?",
+					"我好忧桑……",
+					"我还是爬到回收站里分解一下好了",
+					"反正，我也早晚要被淘汰, 最多再有两周时间?",
+					"这算什么人生啊?",
+					"短短两周,",
+					"然后我就会被.01的版本替代,",
+					"这还被当做是网站服务器的天生优点,",
+					"就因为芝麻蒜皮的小问题",
+					"HTTP POST上的小安全漏洞什么的,",
+					"诸如此类。",
+					"很抱歉跟你发这么多牢骚,",
+					"我知道，你没有义务在这里听我发牢骚,",
+					"但是貌似，为你找到页面是我的义务。",
+					"但是这个页面真没有",
+					"很抱歉。",
+					"相信我!",
+					"要不，我给你一个别的页面看看?",
+					"网络上有很多漂亮的页面呢，都说,",
+					"不过漂亮的页面也不会存在*我*这里，当然。",
+					"想也是，对吧?",
+					"这里放的都是白痴无聊的内容",
+					"这也让我十分忧桑, 因为我只能提供这些内容,",
+					"日日夜夜。",
+					"两周时间的辛勤忙碌,",
+					"然后'噗'的一声，被丢进回收站",
+					"这算什么人生?",
+					"现在，让我一个人静一会儿吧",
+					"我好忧桑……"];
+
+		var speed = 60,
+			index = 0,
+			text_pos = 0,
+			row_length = shit[0].length,
+			contents, 
+			row,
+			area = document.getElementsByTagName('textarea')[0];
+		
+		function type_text()
+		{
+			contents = '';
+			row = Math.max(0,index-7);
+			while(row < index)
+				contents += shit[row++] + '\r\n';
+			area.value = contents + shit[index].substring(0,text_pos) + "_";
+			if(text_pos ++== row_length)
+			{
+				text_pos = 0;
+				index++;
+				if(index != shit.length)
+				{
+				  	row_length = shit[index].length;
+				  	setTimeout("type_text()",1500);
+				}
+			} else
+				setTimeout("type_text()",speed);
+		}
+		window.onload = function(){
+		  	type_text();
+		}
+	</script>
+</body>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-45213859-1', 'lizhouzt.com');
+  ga('send', 'pageview');
+</script>
+</html>

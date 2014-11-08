@@ -1,0 +1,10 @@
+.editorconfig
+node_modules/
+*.swp
+.sass-cache/
+*.less
+!build/**/*\-min.css
+*.jpg
+*.jpeg
+*.png
+.DS_Store

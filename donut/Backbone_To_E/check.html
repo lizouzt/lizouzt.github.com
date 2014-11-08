@@ -1,0 +1,57 @@
+<script src="jquery.js"></script>
+<script src="underscore.js"></script>
+<script src='backbone.js'></script>
+<script>
+	var Entry = Backbone.Model.extend({
+		defaults: {
+			data: {
+				key: 'asic',
+				nval: 'aaa',
+				dval: 'bbb'
+			},
+			order: dic.nextOrder(),
+			keyColor: "#000000",
+			content: "*********",
+			editable: false
+		},
+
+		toggle: function(){
+			this.save({editable: !this.get('editable')});
+		}
+	});
+
+    var Dictionary = Backbone.collection.extend({
+    	model: entry,
+
+    	editable: function(){
+    		return this.where({editable: true})
+    	},
+
+    	nextOrder: function(){
+    		if(!this.length) return 1;
+    		return this.last().get('order') + 1;
+    	}
+    });
+
+    var dic = new Dictionary;
+
+    var EntryView = Backbone.View.extend({
+    	
+    	tagName: 'li',
+
+    	template: _template($('#entry-template').html()),
+
+    	events: {
+    		"click .toggle": "toggleEditable",
+    		"dblclick .view": "edit",
+    		"click a.destroy": "clear",
+    		"keypress .edit": "updateOnEnter",
+    		"blur .edit": "close"
+    	},
+
+    	initialize: function(){
+    		this.listenTo(this.model, 'change', this.render);
+    		this.listenTo(this.modle, 'destroy', this.remove);
+    	}
+    });
+</script>

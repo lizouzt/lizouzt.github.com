@@ -1,0 +1,6 @@
+@media screen and (max-width:768px){#header{padding:0;}#header .logo{margin:10px 58px 10px 0;} #header .nav{margin:25px 10px 25px 0;}}
+@media screen and (max-width:578px){#header{padding:0;}#header .logo{margin:10px 58px 10px 0;} #header .nav{margin:25px 10px 25px 0;} #header .contact{display:none;}}
+@media screen and (max-width:480px){#header{padding:0;}#header .logo{margin:10px 58px 10px 0;} #header .nav{margin:25px 10px 25px 0;} #header .contact{display:none;}}
+@media screen and (max-width:430px){#header{padding:0;}#header .logo{margin:10px 20px 10px 0;} #header .nav{margin:25px 0;} #header .contact{display:none;}}
+@media screen and (max-device-width:320px) and (orientation:portrait){#header{padding:0;}#header .logo{margin:10px 20px 10px 0;} #header .nav{margin:25px 0;} #header .contact{display:none;}}
+@media screen and (max-device-width:568px) and (orientation:landscape){#header{padding:0;}#header .logo{margin:10px 58px 10px 0;} #header .nav{margin:25px 10px 25px 0;} #header .contact{display:none;}}

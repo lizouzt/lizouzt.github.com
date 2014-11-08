@@ -1,0 +1,166 @@
+
+<!doctype html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+<!--http://orm-other.s3.amazonaws.com/webaudioapi/samples/frequency-response/index.html-->
+<title>Frequency Response | Web Audio API</title>
+<style type="text/css">
+  body {
+    background: black;
+    font-family: 'Open Sans', sans-serif;
+    color: #ccc;
+  }
+
+  #container {
+    margin: 0 auto;
+    width: 640px;
+    background: #111;
+    padding: 20px;
+    border: 1px #222 solid;
+  }
+
+  #header h1 { margin: 0; }
+  #nav ul { margin: 0; }
+  #nav li {
+    font-weight: bold;
+    float: right;
+    list-style: none;
+    margin-left: 10px;
+  }
+
+  #header a, #nav a { color: rgb(28, 161, 202); text-decoration: none; }
+  #header a:hover, #nav a:hover { color: rgb(157, 204, 255); text-decoration: underline; }
+
+  article a { color: #FEFEF2; text-decoration: none; }
+  article a:hover { color: white; text-decoration: underline; }
+
+  a { color: #FEF0C9; text-decoration: none; }
+  a:hover { color: #FEF6E4; text-decoration: underline; }
+
+  article {
+    font-weight: bold;
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    color: black;
+  }
+
+  #content article:nth-child(6n+1) { background: #FA6B67; }
+  #content article:nth-child(6n+2) { background: #70CA5D; }
+  #content article:nth-child(6n+3) { background: #3CC9E4; }
+  #content article:nth-child(6n+4) { background: #EC945E; }
+  #content article:nth-child(6n+5) { background: #7189DE; }
+  #content article:nth-child(6n+6) { background: #E798DC; }
+
+
+  .sample .name {
+    font-size: 22px;
+    padding-bottom: 5px;
+    color: #fee;
+  }
+
+  .sample .info {
+    color: #B0F0F8;
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    background-color: gray;
+    height: 20px;
+    border-radius: 15px;
+    padding: 0 3px;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    vertical-align: middle;
+    -webkit-appearance: none;
+    background-color: #444;
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+  }
+
+  input[type="checkbox"] {
+    display:none;
+  }
+  input[type="checkbox"] + label span {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+    background:url(images/check_radio_sheet.png) left top no-repeat;
+    cursor:pointer;
+  }
+  input[type="checkbox"]:checked + label span {
+    background:url(images/check_radio_sheet.png) -19px top no-repeat;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="container">
+
+  <div id="nav">
+  </div>
+
+  <div id="header">
+    <h1>Web Audio API</h1>
+  </div>
+
+
+  <div id="wrapper">
+    <div id="content">
+
+      
+<div class="post">
+  <h2>Frequency Response</h2>
+  <p>
+    <p>A sample showing the frequency response graphs of various kinds of <code>BiquadFilterNodes</code>.</p>
+
+  </p>
+  <p>
+    <!-- Slider stuff -->
+
+<script type="text/javascript" src="js/frequency-response/events.js"></script>
+
+<p><style type="text/css"></style>
+<style type="text/css">
+  #slider { margin: 10px; }
+</style></p>
+
+<script type="text/javascript" src="js/frequency-response/frequency-response-sample.js"></script>
+
+<div id="info">
+</div>
+
+<p><canvas id="canvasID" width="500" height="250" style="float: left;">
+</canvas></p>
+
+<p><br><br></p>
+
+<!-- Sliders and other controls will be added here -->
+
+<div style="display: inline-block; margin-left: 10px;" id="controls"> 
+<select onchange="changeFilterType(this.selectedIndex);">
+    <option>LowPass</option>
+    <option>HighPass</option>
+    <option>BandPass</option>
+    <option>LowShelf</option>
+    <option>HighShelf</option>
+    <option>Peaking</option>
+    <option>Notch</option>
+    <option>AllPass</option>
+</select>
+<div> <input id="frequencySlider" type="range" min="0" max="1" step="0.01" value="0" style="height: 20px; width: 200px;"> <span id="frequency-value" style="position:relative; top:-5px;">frequency = 1277.46 Hz</span> </div> <br>  <div> <input id="QSlider" type="range" min="0" max="20" step="0.01" value="0" style="height: 20px; width: 200px;"> <span id="Q-value" style="position:relative; top:-5px;">Q = 8.59 dB</span> </div> <br>  <div> <input id="gainSlider" type="range" min="0" max="5" step="0.01" value="0" style="height: 20px; width: 200px;"> <span id="gain-value" style="position:relative; top:-5px;">gain = 3.12</span> </div> <br>  </div>
+</div>
+
+
+    </div>
+
+  </div>
+
+  </body>
+</html>

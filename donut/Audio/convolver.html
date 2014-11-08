@@ -1,0 +1,209 @@
+<button onclick="enviraudio()">UserMedia</button>
+<button onclick="compressor()">compressor</button>
+<select onchange="changeType(this.value);">
+	<option>lowpass</option>
+	<option>highpass</option>
+	<option>bandpass</option>
+	<option>lowshelf</option>
+	<option>highshelf</option>
+	<option>peaking</option>
+	<option>notch</option>
+	<option>allpass</option>
+</select>
+
+<select onchange="blender.setConvolverSourceBuffer('sounds/reverbs/'+this.value)+'.wav';">
+	<option>telephone</option>
+	<option>back-slap</option>
+	<option>back-wards</option>
+	<option>binaural</option>
+	<option>cardiod-rear</option>
+	<option>cardiod-spread</option>
+	<option>cardiod-true-stereo</option>
+	<option>cosmic</option>
+	<option>dark-cathedral</option>
+	<option>echo-chamber</option>
+	<option>huge-spacious</option>
+	<option>medium-open</option>
+	<option>noise-spreader</option>
+	<option>omni</option>
+	<option>outside</option>
+	<option>peculiar-backwards</option>
+	<option>sifter</option>
+	<option>tim-stretch</option>
+	<option>tim-warehouse-stretch</option>
+	<option>wild-echo</option>
+</select>
+<hr>
+<canvas id="canvas_1"></canvas>
+
+<script type="text/javascript" src="js/bufferLoader.js"></script>
+<script type="text/javascript" src="js/init.js"></script>
+<script type="text/javascript">
+	var audioContext = !!window.AudioContext ? AudioContext : webkitAudioContext;
+	var context = new audioContext(),
+		REVERBLEVEL = 0.8,
+		SOURCES = [],
+		GAINNODE = [];
+
+	var Blender = function(){
+		this.init.apply(this, arguments);
+	}
+	Blender.prototype.setSourceBuffer = function(obj, name){
+		if(!!name)
+			obj.buffer = BUFFERS[name];
+	}
+	Blender.prototype.setConvolverSourceBuffer = function(url){
+		var loader = new BufferLoader(context, [url], function(buffers){
+			reverb.buffer = buffers[0];
+			console.log('yes');
+		});
+		loader.load();
+	}
+	Blender.prototype.stop = function(){
+		for(var i in SOURCES){
+			SOURCES[i].stop(0);
+		}
+		SOURCES = [];
+	}
+	var enviraudio = function(){
+		blender.stop();
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || window.getUserMedia;
+
+		navigator.getUserMedia({audio:true},function(stream){
+		    var source = context.createMediaStreamSource(stream);
+		    SOURCES.push(stream);
+
+		    source.connect(mainFilter);
+			mainFilter.connect(GAINNODE[0]);
+			GAINNODE[0].connect(context.destination);
+		}, function(e){console.error(e.message);});
+	}
+	var compressor = function(){
+		blender.stop();
+		GAINNODE = [];
+
+	    compressor = context.createDynamicsCompressor();
+
+	    // Send1 effect
+	    reverb = context.createConvolver();
+	    // Convolver impulse response may be set here or later 
+
+	    // Send2 effect
+	    delay = context.createDelay();
+
+	    // Connect final compressor to final destination 
+	    compressor.connect(context.destination);
+
+	    // Connect sends 1 & 2 through effects to main mixer 
+	    s1 = context.createGain();
+	    reverb.connect(s1);
+	    s1.connect(compressor);
+	    
+	    s2 = context.createGain();
+	    delay.connect(s2);
+	    s2.connect(compressor);
+
+	    // Create a couple of sources 
+	    source1 = context.createBufferSource();
+	    source1.loop = true;
+	    source1.buffer = BUFFERS.song;
+
+	    source2 = context.createBufferSource();
+	    source2.loop = true;
+	    source2.buffer = BUFFERS.blueyellow;
+	    
+	    // Connect source1 
+	    g1_1 = context.createGain();
+	    source1.connect(g1_1);
+	    
+	    g1_1.connect(compressor);
+	    g1_1.connect(reverb);
+	    g1_1.connect(delay);
+
+	    // Connect source2 
+	    g1_2 = context.createGain();
+	    source2.connect(g1_2);
+
+	    g1_2.connect(compressor);
+	    g1_2.connect(reverb);
+	    g1_2.connect(delay);
+	    
+	    blender.analyzing(compressor);
+	    source2.start(0);
+	    source1.start(0);
+
+	    SOURCES.push(source1,source2);
+	}
+
+	Blender.prototype.init = function(){
+		var source = context.createBufferSource();
+		SOURCES.push(source);
+		this.setSourceBuffer(source, 'song');
+
+		var dryGN = context.createGain();
+		var wetGN = context.createGain();
+		GAINNODE.push(dryGN, wetGN);
+
+		mainFilter = context.createBiquadFilter();
+		reverb = context.createConvolver();
+
+		mainFilter.frequency.value = 22050;
+		mainFilter.Q.value = 5;
+
+		source.connect(mainFilter);
+		mainFilter.connect(dryGN);
+		dryGN.connect(context.destination);
+
+		mainFilter.connect(reverb);
+		reverb.connect(wetGN);
+		wetGN.connect(context.destination);
+		wetGN.gain.value = REVERBLEVEL;
+
+		this.setConvolverSourceBuffer('sounds/reverbs/telephone.wav');
+
+		source.playbackRate.value = 1.0;
+		source.loop = true;
+
+		source.start(context.currentTime);
+		
+		this.analyzing(dryGN);
+	}
+	Blender.prototype.Process = function(e){
+		var leftBuffer = e.inputBuffer.getChannelData(0);
+		var rightBuffer = e.inputBuffer.getChannelData(1);
+
+		for(var i = 0; i < leftBuffer.length; ++i) {
+	        leftBuffer[i] = rightBuffer[i] = (Math.random() - 0.5) * 1;
+	    }
+	}
+	Blender.prototype.analyzing = function(obj){
+		analyzer = context.createAnalyser();
+		analyzer.smoothingTimeConstant = 0.5;
+    	analyzer.fftSize = 1024;
+    	obj.connect(analyzer);
+    	setInterval(this.drawGraph, 100);
+	}
+	Blender.prototype.drawGraph = function(){
+		data = new Float32Array(1024);
+		analyzer.getFloatFrequencyData(data);
+		ctx.clearRect(0, 0, 400, 200);
+	    ctx.fillStyle = "#000000";
+	    ctx.fillRect(0, 0, 400, 200);
+	    ctx.fillStyle = "#009900";
+	    for(var i = 0; i < 512; ++i) {
+	        var f = context.sampleRate * i / 1024;
+	        y = 128 + (data[i] + 48.16) * 2.56;
+	        ctx.fillRect(i, 200 - y, 1, y);
+	    }
+	}
+
+	window.onload = function(){
+		cv = document.getElementById("canvas_1"),
+	    ctx = cv.getContext("2d"),
+	    cv.width = 400;
+	    cv.height = 200;
+		loadBuffers(context, function(){
+			blender = new Blender();
+		});
+	}
+</script>

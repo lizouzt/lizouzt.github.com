@@ -1,0 +1,8 @@
+<link rel="stylesheet" type="text/css" href="resources/css/list.css">
+<h1>{{message}}</h1>
+<div id="order" ng-click="">
+	<div class="actived">By Date</div>
+	<div>By Type</div>
+	<input ng-model="orderProp">
+</div>
+<div ng-repeat="blog in blogs | filter:query | orderBy:orderProp"><a href="#/blog/{{blog.id}}">{{blog.name}}</a><sub>{{blog.type | checkmark:"***"}}</sub></div>
