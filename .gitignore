@@ -4,7 +4,4 @@ node_modules/
 .sass-cache/
 *.less
 !build/**/*\-min.css
-*.jpg
-*.jpeg
-*.png
 .DS_Store
