@@ -3,8 +3,6 @@ node_modules/
 *.swp
 .sass-cache/
 *.less
+!build/**/*.css
 !build/**/*\-min.css
-*.jpg
-*.jpeg
-*.png
 .DS_Store
