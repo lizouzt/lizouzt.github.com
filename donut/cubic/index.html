@@ -69,6 +69,15 @@ function initApp(){
 	bindEvent();
 }
 function bindEvent(){
+	var $view = $('view'),
+		end = function(){
+			$view.className = "active";
+			
+			setTimeout(function() {
+				$view.className = "";
+			}, 2000);
+		};
+
 	Drag({
 		el:'drag_p1',
 		range: {x1: 0, y1: 0, x2: SIZE, y2: SIZE},
@@ -80,6 +89,7 @@ function bindEvent(){
 		},
 		end:function(e){
 			this.el.classList.remove('active');
+			end();
 		}
 	});
 	Drag({
@@ -95,12 +105,13 @@ function bindEvent(){
 		},
 		end:function(e){
 			this.el.classList.remove('active');
+			end();
 		}
 	});
 	
 	$("run").onclick = function(e){
 		e.preventDefault();
-		var $btn = e.target, $view = $('view');
+		var $btn = e.target;
 		if(/active/.test($btn.className))
 			return
 		$btn.className += ' active';
