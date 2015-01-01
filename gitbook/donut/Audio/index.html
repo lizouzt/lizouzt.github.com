@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>wave</title>
+    <style>
+      	body {
+      		padding: 0;
+      		margin: 0;
+        	text-align: center;
+        	overflow: hidden;
+        	color: gray;
+        }
+      	header{
+      		height: 50px;
+      		line-height: 50px;
+      		text-align: right;
+      		background-color: #ECECC4;
+      	}
+      	header address{
+      		width: 150px;
+      		display: inline-block;
+			float: left;
+			font-size: 20px;
+      	}
+      	a{
+      		color: gray;
+      		text-decoration: none;
+      	}
+        canvas {
+        	border: 1px solid black;
+        }
+        select{
+        	width: 180px;
+			height: 45px;
+			font-size: 10px;
+			padding: 10px!important;
+			text-align: center;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+        }
+        .google_plus{
+        	width: 100px;
+        	float: left;
+        }
+        .btn{
+	      	padding: 10px 40px;
+			color: #fff;
+			font-size: 1em;
+			border: 1px solid #aaa;
+			border-radius: 4px;
+			line-height: 1.5em;
+			-webkit-transition: all .2s linear;
+			box-shadow: 0 0 0 rgba(255,255,255,.7), 0 -5px 5px rgba(255,255,255,.15) inset;
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ff3019), color-stop(100%, #cf0404));
+			background: -moz-linear-gradient(top, #ff3019, #cf0404 );
+			background: -o-linear-gradient(top, #ff3019, #cf0404 );
+        }
+        .btn:hover{
+			box-shadow: 0 5px 10px rgba(255,255,255,.7), 0 -10px 20px rgba(255,255,255,.15) inset;
+		}
+		.btn:hover .light{
+			-webkit-animation: shine .4s linear forwards;
+		}
+		.btn:active{
+			box-shadow: 0 0 0 rgba(255,255,255,.7), 0 -10px 20px rgba(255,255,255,.15) inset;
+		}
+		@-webkit-keys shine {
+		    0%  { left: -40px;}
+		    100%{ left: 40px; }
+		}
+    </style>
+    <script type="text/javascript" src="js/bufferLoader.js"></script>
+	<script type="text/javascript" src="js/init.js"></script>
+	<script src="js/three.js"></script>
+	<script type="text/javascript" src="js/stage.js"></script>
+	<script type="text/javascript">
+    	var audioContext = !!window.AudioContext ? AudioContext : webkitAudioContext;
+		var context = new audioContext(),
+			TYPE = 2,
+			REVERBLEVEL = 0.8,
+			SOURCES = [],
+			GAINNODE = [];
+
+		var reverb, mainFilter, panner;
+		var Blender = function(){
+			this.init.apply(this, arguments);
+		}
+		Blender.prototype.setSourceBuffer = function(obj, name){
+			if(!!name)
+				obj.buffer = BUFFERS[name];
+		}
+		Blender.prototype.setConvolverSourceBuffer = function(url){
+			var loader = new BufferLoader(context, [url], function(buffers){
+				reverb.buffer = buffers[0];
+				console.log('yes');
+			});
+			loader.load();
+		}
+		Blender.prototype.stop = function(){
+			for(var i in SOURCES){
+				SOURCES[i].stop(0);
+			}
+			SOURCES = [];
+		}
+		Blender.prototype.init = function(){
+			this.initSounds();
+		}
+		Blender.prototype.initSounds = function(){
+			var source = context.createBufferSource();
+			SOURCES.push(source);
+			this.setSourceBuffer(source, 'techno');
+
+			panner = context.createPanner();
+			panner.coneOuterGain = 0.2;
+			panner.coneOuterAngle = 180;
+			panner.conInnerAngle = 0;
+			panner.connect(context.destination);
+
+			var dryGN = context.createGain();
+			var wetGN = context.createGain();
+			GAINNODE.push(dryGN, wetGN);
+
+			mainFilter = context.createBiquadFilter();
+			reverb = context.createConvolver();
+
+			mainFilter.frequency.value = 22050;
+			mainFilter.Q.value = 5;
+
+			source.connect(mainFilter);
+			mainFilter.connect(dryGN);
+			dryGN.connect(panner);
+
+			mainFilter.connect(reverb);
+			reverb.connect(wetGN);
+			wetGN.connect(panner);
+			wetGN.gain.value = REVERBLEVEL;
+
+			this.setConvolverSourceBuffer('sounds/reverbs/cardiod-true-stereo.wav');
+
+			source.playbackRate.value = 1.0;
+			source.loop = true;
+
+			source.start(context.currentTime);
+			this.analyzing(dryGN);
+		}
+		Blender.prototype.Process = function(e){
+			var leftBuffer = e.inputBuffer.getChannelData(0);
+			var rightBuffer = e.inputBuffer.getChannelData(1);
+
+			for(var i = 0; i < leftBuffer.length; ++i) {
+		        leftBuffer[i] = rightBuffer[i] = (Math.random() - 0.5) * 1;
+		    }
+		}
+		Blender.prototype.analyzing = function(obj){
+			analyzer = context.createAnalyser();
+			analyzer.smoothingTimeConstant = 0.5;
+	    	analyzer.fftSize = 1024;
+	    	obj.connect(analyzer);
+	    	this.drawGraph();
+		}
+		Blender.prototype.drawGraph = function(){
+			var self = this;
+			setInterval(function(){
+				data = new Float32Array(1024);
+				analyzer.getFloatFrequencyData(data);
+				data = Array.prototype.slice.call(data, 0);
+				
+				// surface.sync(data);
+				if(TYPE == 1)
+					self.circle(data);
+				else if(TYPE == 2)
+					Stage.dance(data);
+			}, 100);
+		}
+		Blender.prototype.circle = function(data){
+			ctx.clearRect(0);
+		}
+		var enviraudio = function(){
+			blender.stop();
+			navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || window.getUserMedia;
+
+			navigator.getUserMedia({audio:true},function(stream){
+			    var source = context.createMediaStreamSource(stream);
+			    SOURCES.push(stream);
+
+			    source.connect(mainFilter);
+				mainFilter.connect(GAINNODE[0]);
+				GAINNODE[0].connect(context.destination);
+			}, function(e){console.error(e.message);});
+		}
+
+    	window.onload = function(){
+    		if(!audioContext){
+		        document.body.innerHTML = "<h2 style='width: 80%;padding: 50px 0;color: #fff; text-shadow: 1px 1px 2px #000; font-size: 28px;margin: 0 auto;'>Your browser not supported. User another one, Please!";
+		        return false;
+		    }
+    		Stage.init();
+			loadBuffers(context, function(){
+				blender = new Blender();
+			});
+		}
+    </script>
+  </head>
+  <body>
+  	<header>
+  		<address>&copy;<a target="_blank" href="mailto:lizouzt@gmail.com">Tao Z.</a></address>
+  		<div class="google_plus">
+	  		<!-- Place this tag where you want the +1 button to render -->
+			<g:plusone size="medium" href="https://plus.google.com/104366552863428381755/posts/jbNM1L47kTt"></g:plusone>
+
+			<!-- Place this render call where appropriate -->
+			<script type="text/javascript">
+			  window.___gcfg = {lang: 'zh-CN'};
+
+			  (function() {
+			    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			    po.src = 'https://apis.google.com/js/plusone.js';
+			    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+			  })();
+			</script>
+		</div>
+	  	<button class="btn" onclick="enviraudio()">Microphone</button>
+	  	<select class="btn" onchange="blender.setConvolverSourceBuffer('sounds/reverbs/'+this.value)+'.wav';">
+			<option>cardiod-true-stereo</option>
+			<option>back-slap</option>
+			<option>back-wards</option>
+			<option>binaural</option>
+			<option>cardiod-rear</option>
+			<option>cardiod-spread</option>
+			<option>telephone</option>
+			<option>cosmic</option>
+			<option>dark-cathedral</option>
+			<option>echo-chamber</option>
+			<option>huge-spacious</option>
+			<option>medium-open</option>
+			<option>noise-spreader</option>
+			<option>omni</option>
+			<option>outside</option>
+			<option>peculiar-backwards</option>
+			<option>sifter</option>
+			<option>tim-stretch</option>
+			<option>tim-warehouse-stretch</option>
+			<option>wild-echo</option>
+		</select>
+	</header>
+    <div id="frame"></div>
+    <script type="text/javascript">
+    	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		  ga('create', 'UA-45213859-1', 'lizhouzt.com');
+		  ga('send', 'pageview');
+    </script>
+  </body>
+</html>

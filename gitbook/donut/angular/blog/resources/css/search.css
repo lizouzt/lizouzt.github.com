@@ -1,0 +1,5 @@
+body.hg #header .title{display:block;}
+body.hg #content{margin-top:0;}
+#header .title{position:fixed;}
+#header .navbar{display:none;}
+#content{padding-top:50px !important;}

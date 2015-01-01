@@ -1,0 +1,180 @@
+<button onclick="play('linear')">LinearRamp</button>
+<button onclick="play('biquad')">BiquadFilter</button>
+<button onclick="play('CrossGain')">CrossGain</button>
+<button onclick="getUserMedia()">UserMedia</button>
+<select onchange="changeType(this.value);">
+	<optgroup lable="pass">
+		<option>lowpass</option>
+		<option>highpass</option>
+		<option>bandpass</option>
+	</optgroup>
+	<optgroup lable="shelf">
+		<option>lowshelf</option>
+		<option>highshelf</option>
+	</optgroup>
+	<optgroup lable="others">
+		<option>peaking</option>
+		<option>notch</option>
+		<option>allpass</option>
+	</optgroup>
+</select>
+<a href="frequencyresp.html" target="_blank">FR</a>
+<hr>
+filter.frequency:
+<input type="range" min=0.01 max=1 step=0.01 onchange="changeFrequency(this.value)">Frequency<br>
+filter.Q:
+<input type="range" min=0.01 max=1 step=0.01 onchange="changeQuality(this.value)">Quality<br>
+filter.Q:
+<input type="range" min=0.1 max=3 step=0.1 onchange="changeBand(this.value)">BandWidth<br>
+filter.gain: Attenuation
+<input type="range" min=-10 max=10 step=0.1 onchange="changeGain(this.value)">Boot<br>
+gainNode.gain: atmospheric
+<input type="range" min=0 max=100 onchange="changeCrossGain(this.value/this.max)">boss<br>
+<hr>
+<div id="graph" style="width:200px; height:150px;background-size:cover;"></div>
+<h5 id="tips"></h5>
+<script type="text/javascript" src="js/bufferLoader.js"></script>
+<script type="text/javascript" src="js/init.js"></script>
+<script type="text/javascript">
+var type = '';
+var context = new webkitAudioContext();
+
+function play(flag){
+	type = flag;
+	loadBuffers(context, function(){
+		if(type == 'linear')
+			for(var key in BUFFERS){
+	  			playSound(createSource(BUFFERS[key]));
+			}
+		else if(type == 'biquad')
+			playBiquad(createSource(BUFFERS.atmos));
+		else if(type == 'CrossGain')
+			playCrossGain(createSource(BUFFERS.blueyellow),createSource(BUFFERS.atmos));
+  	});
+}
+
+function playCrossGain(a,b){
+	gains = [a.gainNode, b.gainNode];
+	a.source.loop = true;
+	a.source.connect(a.gainNode);
+	a.gainNode.connect(context.destination);
+	b.source.loop = true;
+	b.source.connect(b.gainNode);
+	b.gainNode.connect(context.destination);
+	b.source.start(0);
+	a.source.start(0);
+}
+
+function playBiquad(res){
+	filter = res.filter;
+	res.source.loop = true;
+	res.source.connect(res.filter);
+	res.filter.connect(res.gainNode);
+	res.gainNode.connect(context.destination);
+	res.source.noteOn(0);
+}
+
+function playSound(res) {
+	res.source.connect(res.gainNode);
+	res.gainNode.connect(context.destination);
+
+	res.gainNode.gain.linearRampToValueAtTime(1,context.currentTime);
+	res.gainNode.gain.linearRampToValueAtTime(0,context.currentTime + res.source.buffer.duration*0.8);
+	res.source.noteOn(0);
+}
+
+var graphs = {"bandpass": "bandpass.gif"},
+	tips = {
+		"bandpass": "allows a range of frequencies to pass through and attenuates the frequencies below and above this frequency range.", 
+		"lowshelf": "allows all frequencies through, but adds a boost (or attenuation) to the lower frequencies.",
+		"lowpass": "allows frequencies below the cutoff frequency to pass through and attenuates frequencies above the cutoff.",
+		"highpass": "opposite of a lowpass filter.",
+		"highshelf": "allows all frequencies through, but adds a boost to the higher frequencies.",
+		"peaking": " allows all frequencies through, but adds a boost (or attenuation) to a range of frequencies.",
+		"notch": "opposite of a bandpass filter.",
+		"allpass": 'pass all.'
+	},
+	tip = document.getElementById('tips'),
+	graph = document.getElementById('graph');
+
+function changeType(value){
+	filter.type = value;
+	var img = !!graphs[value] ? "url(./images/" + graphs[value] + ")" : '';
+	graph.style.backgroundImage = img;
+	tip.innerText = tips[value];
+}
+
+function changeGain(value){
+	filter.gain.value = value;
+}
+
+function changeBand( bandwidth ){
+ 	filter.Q.value = Math.sqrt( Math.pow(2, bandwidth) ) / ( Math.pow(2, bandwidth) - 1 )
+}
+
+function changeFrequency(value) {
+
+	var minValue = 40;
+	//350hz - half of the sampleRate
+	var maxValue = context.sampleRate / 2;
+
+	var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
+
+	var multiplier = Math.pow(2, numberOfOctaves * (value - 1.0));
+
+	filter.frequency.value = maxValue * multiplier;
+}
+
+function changeQuality(value) {
+	//0.0001 to 1000
+  	filter.Q.value = value * 30;
+}
+
+function changeCrossGain(val) {
+	var value = val * (gains.length - 1);
+
+	for (var i = 0, j = gains.length; i < j; i++)
+		gains[i].gain.value = 0;
+
+	var leftNode = Math.floor(value);
+	var x = value - leftNode;
+
+	var gain1 = Math.cos(x * 0.5*Math.PI);
+	var gain2 = Math.cos((1.0 - x) * 0.5*Math.PI);
+
+	gains[leftNode].gain.value = gain1;
+	if(leftNode < gains.length - 1)
+		gains[leftNode + 1].gain.value = gain2;
+}
+
+function getUserMedia(){
+	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+	navigator.getUserMedia({audio:true},function(stream){
+	    var source = context.createMediaStreamSource(stream);
+	    filter = context.createBiquadFilter();
+	    filter.type = 0;//LOWPASS
+		filter.frequency.value = 8000;
+		source.connect(filter);
+		filter.connect(context.destination);
+	});
+}
+
+function createSource(buffer) {
+	var source = context.createBufferSource();
+	var gainNode = context.createGainNode();
+	var filter = context.createBiquadFilter();
+
+	source.buffer = buffer;
+
+	filter.type = 0;//LOWPASS
+	filter.frequency.value = 8000;
+	return {
+		source: source,
+		gainNode: gainNode,
+		filter: filter
+	};
+}
+
+
+</script>

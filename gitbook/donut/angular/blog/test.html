@@ -1,0 +1,200 @@
+<!doctype html>
+<html ng-app="Demo" ng-controller="AppController">
+<head>
+    <meta charset="utf-8" />
+
+    <title>AngularJS Routing</title>
+
+    <style type="text/css">
+
+        a {
+            color: #333333 ;
+            }
+
+        a.on {
+            color: #CC0000 ;
+            font-weight: bold ;
+            text-decoration: none ;
+            }
+
+    </style>
+</head>
+<body>
+
+    <h1>
+        AngularJS Routing
+    </h1>
+
+    <p>
+        Current Render Action:
+
+        <!--
+            我们将把strong元素中的内容绑定到一个当前作用域的模型（model）中，即renderAction变量。然后，当Controller得到renderAction变量时，它将被更新到这里。
+        -->
+        <strong ng-bind="renderAction">Unknown</strong>
+    </p>
+
+    <!--
+        为了控制导航内容，我们将根据当前作用域中的状态来把"on"这个css类附加到下列元素上。
+    -->
+    <p>
+        <a href="#/home" ng-class="{ on: isHome }">Home</a> -
+        <a href="#/friends" ng-class="{ on: isFriends }">Friends</a> -
+        <a href="#/contact/ben" ng-class="{ on: isContact }">Contact</a>
+    </p>
+
+    <!--
+        当路由变化的时候，我们要设置renderPath：一个用于定义页面将如何渲染的数组型变量。
+        我们可以根据这些值来显示/加载各个子页面。
+    -->
+    <div ng-switch on="renderPath[ 0 ]">
+
+        <!-- Home Content. -->
+        <div ng-switch-when="home">
+
+            <p>
+                This is the homepage content.
+            </p>
+
+            <p>
+                Sub-path: <em>{{ renderPath[ 1 ] }}</em>.
+            </p>
+
+        </div>
+
+        <!-- Friends Content. -->
+        <div ng-switch-when="friends">
+
+            <p>
+                Here are my friends!
+            </p>
+
+            <p>
+                Sub-path: <em>{{ renderPath[ 1 ] }}</em>.
+            </p>
+
+        </div>
+
+        <!-- Contact Content. -->
+        <div ng-switch-when="contact">
+
+            <p>
+                Feel free to contact me.
+            </p>
+
+            <p>
+                Sub-path: <em>{{ renderPath[ 1 ] }}</em>.
+            </p>
+
+            <p>
+                Username: <em>{{ username }}</em>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Load AngularJS from the CDN. -->
+    <script
+        type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js">
+    </script>
+    <script type="text/javascript">
+
+
+        // 创建我们这个演示程序的主module。
+        var Demo = angular.module( "Demo", [] );
+
+        // 配置路由，$routeProvider服务将被自动注入到config函数中。
+        Demo.config(
+            function( $routeProvider ){
+                // 我们通常定义路由时，把路由映射到要用于渲染的模板，不过，这种方式只适合于简单网站。
+                // 当你构建具有嵌套导航的复杂应用时，你可能需要做一些更复杂的事情。
+                // 这种情况下，你需要路由到一组"动作（action）"而不是模板。
+                $routeProvider
+                    .when(
+                        "/home",
+                        {
+                            action: "home.default"
+                        }
+                    )
+                    .when(
+                        "/friends",
+                        {
+                            action: "friends.list"
+                        }
+                    )
+                    .when(
+                        "/contact/:username",
+                        {
+                            action: "contact.form"
+                        }
+                    )
+                    .otherwise(
+                        {
+                            redirectTo: "/dashboard"
+                        }
+                    )
+                ;
+
+            }
+        );
+
+
+        // -------------------------------------------------- //
+        // -------------------------------------------------- //
+
+
+        // 定义我们的根控制器
+        Demo.controller(
+            "AppController",
+            function( $scope, $route, $routeParams ){
+
+                // 更新页面的渲染方式
+                render = function(){
+
+                    // 取得当前所选路由的action值
+                    var renderAction = $route.current.action;
+
+                    // 接着，让我们修改renderPath变量，来使它更新到页面的相应位置。
+                    var renderPath = renderAction.split( "." );
+
+                    // 从params中获得username变量
+                    // 注意：对于除了“contact”路由之外的任何路由，这个值都会是undefined。此处为了简化演示，我不对此做任何防御性编程。
+                    var username = ($routeParams.username || "");
+
+                    // 重置用于控制导航栏中css类的各个逻辑变量
+                    var isHome = (renderPath[ 0 ] == "home");
+                    var isFriends = (renderPath[ 0 ] == "friends");
+                    var isContact = (renderPath[ 0 ] == "contact");
+
+                    // 把这些变量保存到model（即$scope）中
+                    $scope.renderAction = renderAction;
+                    $scope.renderPath = renderPath;
+                    $scope.username = username;
+                    $scope.isHome = isHome;
+                    $scope.isFriends = isFriends;
+                    $scope.isContact = isContact;
+
+                };
+
+                // 开始监听“路由变化”事件，我们修改renderAction变量，以便它显示在Strong元素中
+                $scope.$on(
+                    "$routeChangeSuccess",
+                    function( $currentRoute, $previousRoute ){
+
+                        // 刷新显示内容
+                        render();
+
+                    }
+                );
+
+            }
+        );
+
+
+    </script>
+
+</body>
+</html>

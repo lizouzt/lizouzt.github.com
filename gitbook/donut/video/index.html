@@ -1,0 +1,135 @@
+<style type="text/css">
+	body{
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+	}
+	header{
+  		height: 50px;
+  		line-height: 50px;
+  		text-align: left;
+  		position: absolute;
+  		top: 0;
+  	}
+  	header address{
+  		width: 150px;
+  		display: inline-block;
+		float: left;
+		font-size: 20px;
+  	}
+  	a{
+  		color: red;
+  		text-decoration: none;
+  	}
+	#localVideo, #canvas1, #canvas2{
+		visibility: hidden;
+		position: absolute;
+		top: 0;
+		z-index: -1;
+	}
+
+	#capture{
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		margin: 0;
+		font: bold 8px/10px monospace;
+		text-align: center;
+		color: #93a1a1;
+		overflow: hidden;
+	}
+</style>
+<header>
+	<address>&copy;<a target="_blank" href="mailto:lizouzt@gmail.com">Tao Z.</a></address>
+	<div class="google_plus">
+		<!-- Place this tag where you want the +1 button to render -->
+	<g:plusone size="medium" href="https://plus.google.com/104366552863428381755/posts/jbNM1L47kTt"></g:plusone>
+
+	<!-- Place this render call where appropriate -->
+	<script type="text/javascript">
+	  window.___gcfg = {lang: 'zh-CN'};
+
+	  (function() {
+	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	    po.src = 'https://apis.google.com/js/plusone.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	  })();
+	</script>
+	</div>
+</header>
+<video id="localVideo" autoplay></video>
+<canvas id="canvas1"></canvas>
+<canvas id="canvas2"></canvas>
+<pre id="capture"></pre>
+<script type="text/javascript">
+	var contrast = 128, color = false;
+	var Width = 200, Height = 100, len = Width*Height,
+		characters = ("  .,-~:;!*=$#@").split(""),
+		charLen = characters.length - 1;
+	var canvas1 = document.getElementById('canvas1'),
+		ctx1 = canvas1.getContext('2d'),
+		canvas2 = document.getElementById('canvas2'),
+		ctx2 = canvas2.getContext('2d'),
+		capture = document.getElementById('capture'),
+		localVideo = document.getElementById('localVideo');
+
+	canvas1.width = canvas2.width = localVideo.width = Width;
+	canvas1.height = canvas2.height = localVideo.height = Height;
+
+	var contrastFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+	function bound(value, interval) {
+		return Math.max(interval[0], Math.min(interval[1], value));
+	}
+	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+	var getAscii = function(){
+		navigator.getUserMedia(
+		    {video:true,audio:true},
+		    function(stream){
+		        localVideo.src = URL.createObjectURL(stream);
+		        var load = setInterval(function(){
+		        	ctx1.drawImage(localVideo, 0, 0, Width, Height);
+
+		        	var d = ctx1.getImageData(0,0, Width, Height).data, str = '';
+
+		        	for(var i = 0; i < len; i++){
+		        		if(i % Width === 0)
+		        			str += '\n';
+		        		var offset = i * 4;
+	        			var rgb = [d[offset], d[offset+1], d[offset+2]];
+
+						var val = 1 - (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+						if(!!color)
+							str += '<font style="color: rgb('+rgb.join(',')+')">'+characters[parseInt(val*charLen)]+'</font>';
+						else
+							str += characters[parseInt(val*charLen)];
+		        	}
+					capture.innerHTML = str;
+			 	},15);
+		    }, 
+		    function(error){
+		        console.warn("navigator.getUserMedia error: ", error);
+		    }
+		);
+	}
+	window.onscroll = function(e){e.preventDefualt();};
+	window.addEventListener('touchmove', function(e){e.preventDefualt();});
+	window.onload = function(){
+		if(!!navigator.getUserMedia)
+			getAscii();
+		else{
+			document.body.innerHTML = "<h2 style='width: 80%;padding: 50px 0;color: #fff; text-shadow: 1px 1px 2px #000; font-size: 28px;margin: 0 auto;'>Your browser not supported. User another one, Please!";
+        	return false;
+		}
+	}
+</script>
+<script type="text/javascript">
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-45213859-1', 'lizhouzt.com');
+	  ga('send', 'pageview');
+</script>
