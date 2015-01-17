@@ -8,5 +8,5 @@
     * [google doodle 2013](donut/logo/README.md)
     * [马赛克自己 2013](donut/video/README.md)
     * [CSS3 Cubic Bezier函数 2013](donut/cubic/README.md)
-    * [组建仓库 2012～NOW](donut/lib/README.md)
+    * [组件仓库 2012～NOW](donut/lib/README.md)
 
