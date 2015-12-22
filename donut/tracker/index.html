@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="yes" name="apple-touch-fullscreen"/>
+<meta content="telephone=no,email=no" name="format-detection"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+<link rel="stylesheet" type="text/css" href="./main.css" inject>
+<script src=./head.min.js></script>
+<title>Jingle</title>
+</head>
+<body>
+	<div id="choose"><div data-t=1>图片</div><div data-t=2>视频</div></div>
+	<img id="pic" src="../xxxx/mylady_02.jpg" width=320>
+	<canvas id="compare" width="320" style="display: none;"></canvas>
+	<video id="vid" autoplay loop width="320" height="240"></video>
+	<canvas id="overlay" width="320"></canvas>
+	
+	<script>
+		var videoInput = document.getElementById('vid');
+		var canvasInput = document.getElementById('compare');
+		var imgInput = document.getElementById('pic');
+
+		var canvasOverlay = document.getElementById('overlay');
+		var overlayContext = canvasOverlay.getContext('2d');
+
+		var target = imgInput;
+		
+		var setTracker = function () {
+			canvasOverlay.style.position = "absolute";
+			canvasOverlay.style.top = target.offsetTop + 'px';
+			canvasOverlay.style.left = target.offsetLeft + 'px';
+			canvasOverlay.style.zIndex = '100001';
+			canvasOverlay.style.display = 'block';
+
+			canvasOverlay.height = target.offsetHeight;
+			canvasInput.height = target.offsetHeight;
+			
+			var htracker = new headtrackr.Tracker({calcAngles : false, ui : false, headPosition : false});
+
+			htracker.init(target, canvasInput);
+			htracker.start();
+		};
+
+		document.getElementById('choose').addEventListener('click', function (e) {
+			var type = e.target.dataset['t'];
+			target = type == "1" ? imgInput : (function () {
+				imgInput.style.display = 'none';
+				return videoInput;
+			})();
+			setTracker();
+			this.style.display = 'none';
+		});
+
+		document.addEventListener("facetrackingEvent", function( event ) {
+			overlayContext.clearRect(0,0,320,240);
+			if (event.detection == "CS") {
+				overlayContext.translate(event.x, event.y)
+				overlayContext.rotate(event.angle-(Math.PI/2));
+				overlayContext.strokeStyle = "#00CC00";
+				overlayContext.strokeRect((-(event.width/2)) >> 0, (-(event.height/2)) >> 0, event.width, event.height);
+				overlayContext.rotate((Math.PI/2)-event.angle);
+				overlayContext.translate(-event.x, -event.y);
+			}
+		});
+	</script>
+</body>
+</html>

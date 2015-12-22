@@ -1,0 +1,32 @@
+#choose{
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	-webkit-transition: all .6s linear;
+}
+#choose div{
+	cursor: pointer;
+	color: white;
+	float: left;
+	font-size: 32px;
+	height: 100%;
+	text-align: center;
+	width: 49%;
+	-webkit-transition: all .2s linear;
+}
+
+#choose div:first-child{
+	background-color: gold;
+	box-shadow: 3px 0 4px #aaa;
+	margin-right: 2%;
+}
+#choose div:last-child{
+	background-color: cadetblue;
+	box-shadow: -3px 0 4px #aaa;
+}
+
+#choose div:hover{
+	box-shadow: 0 0 2px #aaa;
+}
