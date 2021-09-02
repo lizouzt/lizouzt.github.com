@@ -49,21 +49,21 @@ function hnceTimer(){
 <body style="cursor:default;">
 
 <div id="bak_0">  
-  <div style="WIDTH: 100%; HEIGHT: 73px;background:url(./title316b.png) no-repeat;padding: 6px 0 0;background-size: 90%;"><div style="width:100%;height:32px;line-height:32px;text-align:right"><a href="https://jksb.v.zzu.edu.cn/vls6sss/zzujksb.dll/logout?ptopid=s1B91155D19B741238DC1233C96FFD7DC"><span style="color:#00c;">〖切换账号〗</span></a>　</div></div><div style="width:100%;height:7px"></div><div style="WIDTH: 100%;">
-  	<div class="time" style="width:100%;height:32%;line-height:32px;text-align:left;">
+  <div style="WIDTH: 100%; HEIGHT: 24vw;background:url(./title316b.png) no-repeat center;padding: 6px 0 0;background-size: 100%;"><div style="width:100%;height:32px;line-height:32px;text-align:right"><a href="https://jksb.v.zzu.edu.cn/vls6sss/zzujksb.dll/logout?ptopid=s1B91155D19B741238DC1233C96FFD7DC"><span style="color:#00c;">〖切换账号〗</span></a>　</div></div><div style="width:100%;height:7px"></div><div style="WIDTH: 100%;">
+  	<div class="time" style="width:100%;height:32%;line-height:32px;text-align:center;">
   		<span style="font-size:12px;color:#333;">获取时间：</span>
   		<span style="font-size:16px;color:#a0a;" id="datetimenow">  </span>
   		<span style="font-size:12px;color:#333;">有效期剩余 </span>
   		<span id="tim317" style="font-size:20px;color:#c00;font-weight:500;font-family:黑体;">10分00秒</span>
   	</div>
-  	<div class="detail-block" style="width:86%;text-align: left;margin: 0 7%;min-height:20px;line-height:20px;font-size:15px;color:#00c;font-weight:400;font-family:黑体;">
+  	<div class="detail-block" style="width:86%;text-align: left;margin: 0 7%;min-height:20px;line-height:20px;font-size:15px;color:#00c;font-weight:600;font-family:黑体;">
   		<span style="color:#00a" id="collageAndName">　信息工程学院　XXX</span>
   		<span id="door">　通行信息：主校区大门北门.<span style="display: inline-block; background-color: green; color: white;">入口</span></span>
   		<span class="identity">出入身份：请假被批准的学生</span>
   		<br>
-  		<span style="color:#f00" id="tipNoRecord">提醒：未检索到你今天的出校记录</span>
+  		<span style="color:#ea0202" id="tipNoRecord">提醒：未检索到你今天的出校记录</span>
   	</div>
-  	<div style="width:100%;min-height:25px;line-height:25px;font-size:14px;color:#333;text-align:center;border: 9px solid #06af06;box-sizing: border-box;position: relative;">
+  	<div style="width:90%;margin: 0 5%;min-height:25px;line-height:25px;font-size:14px;color:#333;text-align:center;border: 9px solid #039e03;box-sizing: border-box;position: relative;">
 	  	<img src="./test.jpg" style="width:100%;border:0px;"/>
 	  	<div id="collageAndName2" style="color:#00a;position: absolute;bottom: 6px;width: 100%;font-size: 17px;font-weight: 300;width: 100%;text-align:center;"></div>
 	  </div>
@@ -161,7 +161,7 @@ document.getElementById("datetimenow").innerHTML = (("0"+(dt.getMonth()+1)).slic
 		let c = document.querySelector("input[name='password']").value;
 		
 		document.querySelector("span[id='collageAndName']").innerHTML = (b || '护理与健康学院') +"　"+(a || '张雪');
-		document.querySelector("#collageAndName2").innerHTML = (b || '护理与健康学院') +"　"+(a || '张雪');
+		// document.querySelector("#collageAndName2").innerHTML = (b || '护理与健康学院') +"　"+(a || '张雪');
 		document.querySelector("span[id='door']").innerHTML = "通行信息："+(c || '护理学院大门')+`.<span class='block-font'>入口</span>`;
 		document.querySelector(".identity").innerHTML = "出入身份："+(b || '护理与健康学院');
 		
