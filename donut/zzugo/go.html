@@ -164,7 +164,7 @@ document.getElementById("datetimenow").innerHTML = (("0"+(dt.getMonth()+1)).slic
 		document.querySelector("span[id='collageAndName']").innerHTML = (b || '护理与健康学院') +"　"+(a || '张雪');
 		// document.querySelector("#collageAndName2").innerHTML = (b || '护理与健康学院') +"　"+(a || '张雪');
 		document.querySelector("span[id='door']").innerHTML = "通行信息："+(c || '护理学院大门')+`.<span class='block-font'>入口</span>`;
-		document.querySelector(".identity").innerHTML = "出入身份："+(b || '护理与健康学院');
+		document.querySelector(".identity").innerHTML = "出入身份："+('研究生' || b || '护理与健康学院');
 		
 		if(document.querySelector("[value='back2skuY']").checked){
 			document.querySelector("span[id='tipNoRecord']").style.display="none";
